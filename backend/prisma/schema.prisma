@@ -1,0 +1,54 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String         @id @default(uuid())
+  email        String?        @unique
+  password     String?
+  isGuest      Boolean        @default(false)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  expenses     Expense[]
+  savingsGoals SavingsGoal[]
+  transactions Transaction[]
+}
+
+model Expense {
+  id        String   @id @default(uuid())
+  amount    Float
+  category  String
+  date      DateTime
+  note      String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model SavingsGoal {
+  id           String   @id @default(uuid())
+  name         String
+  targetAmount Float
+  savedAmount  Float    @default(0)
+  deadline     DateTime
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now())
+}
+
+model Transaction {
+  id        String   @id @default(uuid())
+  type      String   // "BORROWED" or "LENT"
+  person    String
+  amount    Float
+  dueDate   DateTime
+  status    String   @default("PENDING") // "PENDING" or "PAID"
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}

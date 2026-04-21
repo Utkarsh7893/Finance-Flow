@@ -1,0 +1,91 @@
+--> College students struggle to track daily expenses, borrowed money, and savings goals, 
+    which leads to poor financial decisions due to lack of visibility and planning tools. 
+    Existing finance apps are either too complex or not tailored to student-specific needs.
+
+--> Creating a Financial Application for :
+    - Students (Age 18-25)
+    - Fixed Income (Usually under Rs. 25,000.00/month)
+      (stipend, part-time job, allowance)
+    - Need a simple UI, not like difficult corporate UI's.
+    - Want privacy as a guest user.
+
+--> Tech Stacks:
+    - Node.js (Backend)
+    - express (Backend)
+    - React+Vite (Frontend)
+    - Tailwind CSS (Frontend)
+    - PostGre SQL (Database)
+
+_________________Core Features______________________
+
+--> login/signup page
+--> guest mode login
+
+(Expense Management)
+-> Add expense:
+      +
+    Amount
+      +
+    Category (Food, Travel, Rent, Study, Fun)
+      +
+    Date    
+      +
+    Note (important!)
+->Edit / delete expense
+->Monthly & weekly totals 
+
+(Savings Tracker)
+-> Create Savings Goals
+    Goal name
+       +
+    Target amount
+       +
+    Current saved amount
+       +
+    Deadline
+->Add money to savings
+->Progress bar (very impactful visually)
+
+(Borrowed/Lent Money)
+-> Record money
+    Borrowed or Lent
+      +
+    Person name
+      +
+    Amount
+      +
+    Due date
+->Status (Pending / Paid)
+->Auto reflect in dashboard balance
+
+--> Dashboard (most important)
+    - Total balance
+    - Monthly expense summary
+    - Savings progress
+    - Borrowed vs Lent summary
+
+
+_________________PageLayout_________________
+->{Frontend Structure}
+1. Pages:
+    - Login / Guest
+    - Dashboard
+    - Expenses
+    - Savings
+    - Borrowed Money
+2. State management:
+    - Context API or Redux Toolkit
+3.Charts:
+    - Chart.js or Recharts
+
+->{Backend Structure}
+    POST   /auth/login
+    POST   /auth/register
+    GET    /expenses
+    POST   /expenses
+    GET    /savings
+    POST   /borrow
+
+
+
+
