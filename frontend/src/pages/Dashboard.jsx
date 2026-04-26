@@ -1,16 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../store';
+import { api, useStore } from '../store';
 import { Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { Wallet, TrendingDown, HandCoins, ArrowRightLeft, Sparkles, SmartphoneNfc, Edit3, Check, X, IndianRupee } from 'lucide-react';
+import { Wallet, TrendingDown, HandCoins, ArrowRightLeft, Sparkles, SmartphoneNfc, Edit3, Check, X, IndianRupee, Bell, CheckCircle2, Mail, Phone } from 'lucide-react';
 
 const COLORS = ['#e62429', '#0b4a99', '#fbc02d', '#512da8', '#00796b'];
 
 export default function Dashboard() {
+  const user = useStore(state => state.user);
   const [data, setData] = useState(null);
   const [expenses, setExpenses] = useState([]);
   const [editingBudget, setEditingBudget] = useState(false);
   const [budgetInput, setBudgetInput] = useState('');
   const [budgetError, setBudgetError] = useState('');
+  const [notifyState, setNotifyState] = useState('idle');
+  const [contactInfo, setContactInfo] = useState('');
+
+  const maskEmail = (email) => {
+    if (!email) return '';
+    const [local, domain] = email.split('@');
+    const masked = local.slice(0, 2) + '*'.repeat(Math.max(local.length - 2, 3));
+    return `${masked}@${domain}`;
+  };
+
+  const handleNotifyClick = () => {
+    if (!user?.isGuest) {
+      setNotifyState('success');
+    } else {
+      setNotifyState('input');
+    }
+  };
+
+  const handleNotifySubmit = () => {
+    if (contactInfo.trim()) {
+      setNotifyState('success');
+    }
+  };
 
   const fetchData = () => {
     api.get('/dashboard').then(res => {
@@ -124,9 +148,59 @@ export default function Dashboard() {
               Save money using real-time UPI and earn exclusive rewards for your heroic financial discipline!
             </p>
           </div>
-          <button className="px-5 py-2 rounded-xl border border-primary text-primary font-bold hover:bg-primary hover:text-white transition-colors whitespace-nowrap text-sm">
-            Notify Me
-          </button>
+          <div className="flex-shrink-0 mt-4 md:mt-0 flex flex-col items-center">
+            {notifyState === 'idle' && (
+              <button
+                onClick={handleNotifyClick}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all whitespace-nowrap text-sm shadow-[0_0_12px_rgba(230,36,41,0.2)] hover:shadow-[0_0_20px_rgba(230,36,41,0.4)]"
+              >
+                <Bell size={15} />
+                Notify Me
+              </button>
+            )}
+            {notifyState === 'input' && (
+              <div className="flex flex-col gap-2 animate-fade-in w-full sm:w-auto">
+                <p className="text-xs text-gray-400 text-center">Enter your email or phone to get notified</p>
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                    <input
+                      type="text"
+                      placeholder="Email or Phone"
+                      className="bg-gray-800 border border-gray-600 rounded-lg pl-8 pr-3 py-1.5 text-white text-sm outline-none focus:border-primary w-full sm:w-48 transition-colors"
+                      value={contactInfo}
+                      onChange={e => setContactInfo(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && handleNotifySubmit()}
+                      autoFocus
+                    />
+                  </div>
+                  <button
+                    onClick={handleNotifySubmit}
+                    className="px-4 py-1.5 rounded-lg bg-primary text-white font-bold hover:bg-primary-dark transition-colors text-sm whitespace-nowrap"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            )}
+            {notifyState === 'success' && (
+              <div className="flex flex-col items-center gap-2 animate-fade-in bg-green-500/10 border border-green-500/30 rounded-2xl px-5 py-4 text-center">
+                <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                  <CheckCircle2 size={22} className="text-green-400" />
+                </div>
+                <p className="text-green-400 font-bold text-sm">You're on the list! 🎉</p>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  We'll notify you at{' '}
+                  <span className="font-bold text-white bg-gray-800 px-2 py-0.5 rounded-md font-mono">
+                    {user?.isGuest
+                      ? (contactInfo.includes('@') ? maskEmail(contactInfo) : contactInfo)
+                      : maskEmail(user?.email)}
+                  </span>
+                  {' '}when UPI Pay goes live.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

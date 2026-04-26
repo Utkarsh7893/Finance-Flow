@@ -33,12 +33,8 @@ export const useStore = create((set) => ({
   checkAuth: async () => {
     const token = localStorage.getItem('token');
     if (!token) return;
-    try {
-      const { data } = await api.get('/auth/me');
-      set({ user: data, isAuthenticated: true, termsAccepted: data.termsAccepted || false });
-    } catch (e) {
-      localStorage.removeItem('token');
-      set({ user: null, isAuthenticated: false, termsAccepted: false });
-    }
+    // Always require re-login — clear token so user lands on /login
+    localStorage.removeItem('token');
+    set({ user: null, isAuthenticated: false });
   }
 }));

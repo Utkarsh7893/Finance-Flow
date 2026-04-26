@@ -11,7 +11,7 @@ import Background3D from './components/Background3D';
 import Savings from './pages/Savings';
 import Borrowed from './pages/Borrowed';
 import About from './pages/About';
-import Terms from './pages/Terms';
+import TermsView from './pages/TermsView';
 
 // Wraps authenticated pages with sidebar + background
 const AppLayout = ({ children }) => {
@@ -26,36 +26,16 @@ const AppLayout = ({ children }) => {
   );
 };
 
-// Protected route: requires auth + terms accepted
+// Protected route: requires auth
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = useStore(state => state.isAuthenticated);
-  const termsAccepted = useStore(state => state.termsAccepted);
-  const user = useStore(state => state.user);
 
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  
-  // Guests always need to accept terms each session
-  // Registered users only once (persisted via backend)
-  if (!termsAccepted) return <Navigate to="/terms" replace />;
 
   return <AppLayout>{children}</AppLayout>;
 };
 
-// Terms route: requires auth but NOT terms accepted (otherwise redirect to dashboard)
-const TermsRoute = () => {
-  const isAuthenticated = useStore(state => state.isAuthenticated);
-  const termsAccepted = useStore(state => state.termsAccepted);
 
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (termsAccepted) return <Navigate to="/dashboard" replace />;
-
-  return (
-    <div className="min-h-screen relative">
-      <Background3D />
-      <Terms />
-    </div>
-  );
-};
 
 export default function App() {
   const checkAuth = useStore(state => state.checkAuth);
@@ -68,12 +48,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public routes */}
-        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Landing />} />
+        {/* Public routes — user always lands on login first */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/landing" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Landing />} />
         <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
-        
-        {/* Terms gate (after login, before dashboard) */}
-        <Route path="/terms" element={<TermsRoute />} />
+        <Route path="/terms-view" element={<TermsView />} />
 
         {/* Protected app routes */}
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

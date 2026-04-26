@@ -170,6 +170,11 @@ app.put('/api/transactions/:id/status', auth, async (req, res) => {
   res.json({ success: true });
 });
 
+app.delete('/api/transactions/:id', auth, async (req, res) => {
+  await prisma.transaction.deleteMany({ where: { id: req.params.id, userId: req.user.id } });
+  res.json({ success: true });
+});
+
 // --- DASHBOARD ROUTE ---
 app.get('/api/dashboard', auth, async (req, res) => {
   const user = await prisma.user.findUnique({ where: { id: req.user.id } });

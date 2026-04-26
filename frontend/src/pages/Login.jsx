@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { api, useStore } from '../store';
-import { ArrowRight, UserCircle, Mail, Lock, Eye, EyeOff, Zap, Shield, Target } from 'lucide-react';
+import { ArrowRight, UserCircle, Mail, Lock, Eye, EyeOff, Zap, Shield, Target, FileText } from 'lucide-react';
 import Background3D from '../components/Background3D';
 
 export default function Login() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
@@ -15,13 +16,17 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [googleEmail, setGoogleEmail] = useState('');
   const [showGoogleInput, setShowGoogleInput] = useState(false);
+  
+  // Terms checkbox
+  const [termsAccepted, setTermsAccepted] = useState(false);
+
   const login = useStore(state => state.login);
 
   // Load remembered email
   useEffect(() => {
-    const saved = localStorage.getItem('rememberedEmail');
-    if (saved) {
-      setEmail(saved);
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    if (savedEmail) {
+      setEmail(savedEmail);
       setRememberMe(true);
     }
     // Auto-trigger guest mode if ?guest=true
@@ -32,6 +37,10 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!termsAccepted) {
+      setError('Please accept the Terms & Conditions to proceed.');
+      return;
+    }
     setError('');
     setLoading(true);
     try {
@@ -51,6 +60,10 @@ export default function Login() {
   };
 
   const handleGuest = async () => {
+    if (!termsAccepted) {
+      setError('Please accept the Terms & Conditions to proceed.');
+      return;
+    }
     setError('');
     setLoading(true);
     try {
@@ -68,6 +81,10 @@ export default function Login() {
       setShowGoogleInput(true);
       return;
     }
+    if (!termsAccepted) {
+      setError('Please accept the Terms & Conditions to proceed.');
+      return;
+    }
     if (!googleEmail || !googleEmail.includes('@')) {
       setError('Please enter a valid email for Google sign-in.');
       return;
@@ -83,6 +100,26 @@ export default function Login() {
       setLoading(false);
     }
   };
+
+  // Custom checkbox component
+  const TermsCheckbox = ({ checked, onChange, children }) => (
+    <label className="flex items-start gap-3 cursor-pointer group">
+      <div className="relative flex items-center justify-center mt-0.5 shrink-0">
+        <input 
+          type="checkbox" 
+          className="peer appearance-none w-[18px] h-[18px] border-2 border-gray-600 rounded bg-[#0a0b10] checked:bg-primary checked:border-primary transition-all cursor-pointer"
+          checked={checked}
+          onChange={(e) => onChange(e.target.checked)}
+        />
+        <svg className="absolute top-[2px] left-[2px] w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+          <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+      <span className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors leading-relaxed">
+        {children}
+      </span>
+    </label>
+  );
 
   return (
     <div className="min-h-screen flex relative overflow-hidden">
@@ -151,7 +188,7 @@ export default function Login() {
               <input 
                 type="email" 
                 placeholder="Email address" 
-                className="input-field pl-11" 
+                className="input-field !pl-12" 
                 value={email}
                 onChange={e => { setEmail(e.target.value); setError(''); }}
                 required 
@@ -162,7 +199,7 @@ export default function Login() {
               <input 
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Password" 
-                className="input-field pl-11 pr-11" 
+                className="input-field !pl-12 !pr-12" 
                 value={password}
                 onChange={e => { setPassword(e.target.value); setError(''); }}
                 required 
@@ -192,7 +229,42 @@ export default function Login() {
               <span className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">Remember me</span>
             </label>
 
-            <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50">
+            {/* Terms & Conditions Checkboxes */}
+            <div className="bg-[#1a1c29]/60 border border-gray-700/40 rounded-xl p-4 space-y-3">
+              <div className="flex items-center gap-2 mb-2">
+                <FileText size={14} className="text-gray-500" />
+                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Required Agreement</span>
+              </div>
+              
+              <TermsCheckbox checked={termsAccepted} onChange={setTermsAccepted}>
+                I agree to the{' '}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); navigate('/terms-view'); }}
+                  className="text-primary hover:text-primary-dark underline underline-offset-2 transition-colors font-medium"
+                >
+                  Terms & Conditions
+                </button>
+                {' '}and accept responsibility for my financial decisions.
+              </TermsCheckbox>
+
+              {!termsAccepted && (
+                <p className="text-[11px] text-gray-600 mt-1 pl-1 flex items-center gap-1">
+                  <span className="inline-block w-1 h-1 rounded-full bg-yellow-500/60"></span>
+                  Agreement must be accepted to continue
+                </p>
+              )}
+            </div>
+
+            <button 
+              type="submit" 
+              disabled={loading || !termsAccepted} 
+              className={`w-full flex items-center justify-center gap-2 font-bold py-3 px-6 rounded-xl transition-all ${
+                termsAccepted 
+                  ? 'btn-primary' 
+                  : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+              } disabled:opacity-50`}
+            >
               {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
               {!loading && <ArrowRight className="w-5 h-5" />}
             </button>
@@ -212,7 +284,7 @@ export default function Login() {
                 <input
                   type="email"
                   placeholder="Enter your Google email"
-                  className="input-field pl-11"
+                  className="input-field !pl-12"
                   value={googleEmail}
                   onChange={e => { setGoogleEmail(e.target.value); setError(''); }}
                 />
@@ -220,8 +292,12 @@ export default function Login() {
             )}
             <button 
               onClick={handleGoogleSignIn}
-              disabled={loading}
-              className="w-full bg-white/5 border border-gray-600 hover:bg-white/10 text-white font-medium py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+              disabled={loading || (showGoogleInput && !termsAccepted)}
+              className={`w-full border font-medium py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 ${
+                termsAccepted || !showGoogleInput
+                  ? 'bg-white/5 border-gray-600 hover:bg-white/10 text-white'
+                  : 'bg-gray-800/50 border-gray-700 text-gray-500 cursor-not-allowed'
+              }`}
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
@@ -234,8 +310,12 @@ export default function Login() {
 
             <button 
               onClick={handleGuest}
-              disabled={loading}
-              className="w-full bg-transparent border border-gray-700 hover:bg-gray-800/50 text-gray-300 hover:text-white font-medium py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              disabled={loading || !termsAccepted}
+              className={`w-full border font-medium py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 ${
+                termsAccepted
+                  ? 'bg-transparent border-gray-700 hover:bg-gray-800/50 text-gray-300 hover:text-white'
+                  : 'bg-gray-800/30 border-gray-700 text-gray-500 cursor-not-allowed'
+              }`}
             >
               <UserCircle className="w-5 h-5" />
               Continue as Guest

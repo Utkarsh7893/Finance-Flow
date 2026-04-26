@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Wallet, PiggyBank, HandCoins, LogOut, Info, FileText, MoreHorizontal, X } from 'lucide-react';
+import { LayoutDashboard, Wallet, PiggyBank, HandCoins, LogOut, Info, MoreHorizontal, X } from 'lucide-react';
 import { useStore } from '../store';
 
 export default function Sidebar() {
@@ -9,12 +9,11 @@ export default function Sidebar() {
   const navigate = useNavigate();
 
   const allLinks = [
-    { name: 'Dashboard', path: '/', icon: <LayoutDashboard size={20} /> },
+    { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'Expenses', path: '/expenses', icon: <Wallet size={20} /> },
     { name: 'Savings', path: '/savings', icon: <PiggyBank size={20} /> },
     { name: 'Borrowed', path: '/borrowed', icon: <HandCoins size={20} /> },
     { name: 'About', path: '/about', icon: <Info size={20} /> },
-    { name: 'Terms', path: '/terms', icon: <FileText size={20} /> },
   ];
 
   const mobileMainLinks = allLinks.slice(0, 4);
