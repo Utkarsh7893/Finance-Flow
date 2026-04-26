@@ -90,7 +90,7 @@ function HeroCard({ hero }) {
       
       {expanded && (
         <div className="animate-fade-in space-y-3 pt-3 border-t border-gray-200 dark:border-gray-800">
-          <p className="text-sm text-gray-300 italic leading-relaxed">{hero.quote}</p>
+          <p className="text-sm text-gray-700 dark:text-gray-300 italic leading-relaxed">{hero.quote}</p>
           <div className="bg-slate-100 dark:bg-gray-800/50 rounded-lg p-3 border border-gray-300 dark:border-gray-700">
             <p className="text-xs text-gray-700 dark:text-gray-400">
               <span className="text-[#fbc02d] font-semibold">💰 Money Tip: </span>
@@ -116,8 +116,8 @@ export default function About() {
           ASSEMBLE YOUR WEALTH
         </h1>
         
-        <p className="text-base md:text-lg text-gray-300 mb-6 leading-relaxed font-light max-w-2xl mx-auto">
-          Welcome to <strong className="text-gray-900 dark:text-white">Finance Flow</strong> — the ultimate financial command center for students.
+        <p className="text-base md:text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed font-light max-w-2xl mx-auto">
+          Welcome to <strong className="text-gray-900 dark:text-white">Centsible</strong> — the ultimate financial command center for students.
           Stop letting your money snap out of existence. Take control, track expenses, and build savings like a superhero building their arsenal.
         </p>
 
@@ -163,9 +163,11 @@ export default function About() {
 
       {/* Superhero Financial Wisdom Section */}
       <div className="mb-8">
-        <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#fbc02d]">Superhero Financial Wisdom</span>
-        </h2>
+        <div className="text-center mb-6">
+          <h2 className="text-2xl md:text-3xl font-bold inline-block bg-white/60 dark:bg-[#12141f]/60 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/50 dark:border-gray-700/50 shadow-sm">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#fbc02d]">Superhero Financial Wisdom</span>
+          </h2>
+        </div>
         <p className="text-center text-gray-700 dark:text-gray-400 mb-8 text-sm md:text-base">Tap on any hero to reveal their secret financial lesson 💡</p>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -180,7 +182,26 @@ export default function About() {
         <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-2">
           "The only limit is the one you set yourself."
         </p>
-        <p className="text-sm text-gray-700 dark:text-gray-400">Start your financial journey today. Every hero started somewhere.</p>
+        <p className="text-sm text-gray-700 dark:text-gray-400 mb-6">Start your financial journey today. Every hero started somewhere.</p>
+        <div className="pt-6 mt-2 border-t border-primary/20 flex flex-col items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-center gap-2">
+             <span className="text-xs text-gray-600 dark:text-gray-400 font-medium tracking-wider uppercase">Created & Engineered By</span>
+             <span className="text-base font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500 bg-[length:200%_auto] animate-gradient">Utkarsh Raj</span>
+          </div>
+          
+          <div className="text-center space-y-1.5">
+             <span className="inline-block px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-widest border border-blue-500/20">
+               Full Stack Web Developer
+             </span>
+             <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md mx-auto leading-relaxed pt-1">
+               A student at Lovely Professional University, Punjab, passionate about building scalable, high-performance web applications.
+             </p>
+          </div>
+
+          <div className="mt-2 text-[10px] text-gray-500 dark:text-gray-500 font-medium tracking-widest uppercase">
+             &copy; {new Date().getFullYear()} Utkarsh Raj. All Rights Reserved.
+          </div>
+        </div>
       </div>
     </div>
   );

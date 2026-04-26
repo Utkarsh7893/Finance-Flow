@@ -1,25 +1,20 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ShieldAlert, ArrowLeft } from 'lucide-react';
 import Background3D from '../components/Background3D';
+import { useStore } from '../store';
 
 export default function TermsView() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const termsAccepted = useStore(state => state.termsAccepted);
+  const setTermsAccepted = useStore(state => state.setTermsAccepted);
 
   return (
     <div className="min-h-screen relative overflow-hidden">
       <Background3D />
 
       <div className="relative z-10 max-w-3xl mx-auto px-4 py-12 md:py-20">
-        {/* Back Button */}
-        <button
-          onClick={() => navigate('/login')}
-          className="flex items-center gap-2 text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-900 dark:text-white transition-colors mb-8 group"
-        >
-          <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-          <span className="text-sm font-medium">Back to Login</span>
-        </button>
-
         <div className="glass-panel p-6 md:p-10">
           {/* Header */}
           <div className="flex items-center gap-4 mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
@@ -28,14 +23,14 @@ export default function TermsView() {
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Terms & Conditions</h1>
-              <p className="text-sm text-gray-700 dark:text-gray-400">Finance Flow — Full Terms of Service</p>
+              <p className="text-sm text-gray-800 dark:text-gray-300">Centsible — Full Terms of Service</p>
             </div>
           </div>
 
           {/* Terms Content */}
-          <div className="text-gray-700 dark:text-gray-400 space-y-6 custom-scrollbar">
-            <p className="text-gray-300 leading-relaxed">
-              Welcome to the S.H.I.E.L.D. Protocol for Financial Management. By using Finance Flow, you agree to the following terms and conditions. Please read them carefully before proceeding.
+          <div className="text-gray-800 dark:text-gray-300 space-y-6 custom-scrollbar">
+            <p className="leading-relaxed">
+              Welcome to the S.H.I.E.L.D. Protocol for Financial Management. By using Centsible, you agree to the following terms and conditions. Please read them carefully before proceeding.
             </p>
 
             <div>
@@ -74,7 +69,7 @@ export default function TermsView() {
                 Financial Disclaimer
               </h3>
               <p className="leading-relaxed pl-9">
-                Finance Flow is a student project designed for educational and tracking purposes only. We do not provide investment advice, tax guidance, or guarantee returns on savings. Users should consult certified financial advisors for professional financial planning and investment decisions.
+                Centsible is a student project designed for educational and tracking purposes only. We do not provide investment advice, tax guidance, or guarantee returns on savings. Users should consult certified financial advisors for professional financial planning and investment decisions.
               </p>
             </div>
 
@@ -94,23 +89,36 @@ export default function TermsView() {
                 Modifications to Terms
               </h3>
               <p className="leading-relaxed pl-9">
-                We reserve the right to update or modify these terms at any time. Users will be notified of significant changes through in-app notifications. Continued use of Finance Flow after such changes constitutes acceptance of the updated terms.
+                We reserve the right to update or modify these terms at any time. Users will be notified of significant changes through in-app notifications. Continued use of Centsible after such changes constitutes acceptance of the updated terms.
               </p>
             </div>
 
-            <p className="pt-4 text-sm text-gray-700 dark:text-gray-400 italic border-t border-gray-200 dark:border-gray-800 mt-8">
+            <p className="pt-4 text-sm text-gray-800 dark:text-gray-300 italic border-t border-gray-200 dark:border-gray-800 mt-8">
               *This is a student project. The information provided is for educational and tracking purposes. Last updated: April 2026.
             </p>
           </div>
 
           {/* Back to Login CTA */}
           <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
+            <label className="flex items-center gap-3 cursor-pointer group mb-6">
+              <input 
+                type="checkbox" 
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+                className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-primary focus:ring-primary dark:focus:ring-primary dark:bg-gray-800 transition-colors cursor-pointer"
+              />
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                I have read and agree to the terms and conditions
+              </span>
+            </label>
+
             <button
-              onClick={() => navigate('/login')}
-              className="btn-primary w-full flex items-center justify-center gap-2"
+              onClick={() => navigate(searchParams.get('mode') === 'signup' ? '/login?mode=signup' : '/login')}
+              disabled={!termsAccepted}
+              className={`w-full flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-semibold transition-all ${termsAccepted ? 'btn-primary' : 'bg-slate-200 dark:bg-gray-800 text-slate-500 dark:text-gray-500 cursor-not-allowed opacity-70'}`}
             >
               <ArrowLeft size={18} />
-              Back to Login
+              {searchParams.get('mode') === 'signup' ? 'Back to Sign Up' : 'Back to Login'}
             </button>
           </div>
         </div>

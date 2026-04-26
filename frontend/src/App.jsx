@@ -58,7 +58,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         {/* Public routes — user always lands on login first */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to="/landing" replace />} />
         <Route path="/landing" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Landing />} />
         <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
         <Route path="/terms-view" element={<TermsView />} />

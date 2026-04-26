@@ -3,6 +3,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Wallet, PiggyBank, HandCoins, LogOut, Info, MoreHorizontal, X } from 'lucide-react';
 import { useStore } from '../store';
 import ThemeToggle from './ThemeToggle';
+import logoImg from '../assets/logo.png';
+import logoLightImg from '../assets/logo_light.png';
 
 export default function Sidebar() {
   const logout = useStore(state => state.logout);
@@ -25,9 +27,10 @@ export default function Sidebar() {
       {/* Desktop Sidebar */}
       <div className="hidden md:flex w-64 border-r border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-[#0a0b10]/90 backdrop-blur-xl h-screen fixed left-0 top-0 flex-col pt-8 z-50 transition-colors">
         <div className="px-6 mb-10 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded bg-primary flex items-center justify-center text-gray-900 dark:text-white font-bold shadow-[0_0_10px_rgba(230,36,41,0.5)]">F</div>
-            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#fbc02d]">Finance Flow</h1>
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
+            <img src={logoLightImg} alt="Centsible Logo" className="w-9 h-9 rounded-full object-cover shadow-[0_0_10px_rgba(0,0,0,0.1)] border border-gray-200 block dark:hidden" />
+            <img src={logoImg} alt="Centsible Logo" className="w-9 h-9 rounded-full object-cover shadow-[0_0_15px_rgba(230,36,41,0.4)] border border-white/10 hidden dark:block" />
+            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#fbc02d]">Centsible</h1>
           </div>
         </div>
         
@@ -38,7 +41,7 @@ export default function Sidebar() {
               to={link.path}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                  isActive ? 'bg-primary/10 text-primary border border-primary/20 shadow-[inset_0_0_15px_rgba(99,102,241,0.1)] dark:shadow-[inset_0_0_15px_rgba(230,36,41,0.1)]' : 'text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-900 dark:text-white hover:bg-slate-100 dark:hover:bg-gray-800/50'
+                  isActive ? 'bg-primary/10 text-primary border border-primary/20 shadow-[inset_0_0_15px_rgba(99,102,241,0.1)] dark:shadow-[inset_0_0_15px_rgba(230,36,41,0.1)]' : 'text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-gray-800/50'
                 }`
               }
             >
@@ -103,7 +106,7 @@ export default function Sidebar() {
               <button
                 key={link.path}
                 onClick={() => { navigate(link.path); setMoreOpen(false); }}
-                className="flex items-center gap-4 px-4 py-4 w-full rounded-xl text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-900 dark:text-white transition-colors"
+                className="flex items-center gap-4 px-4 py-4 w-full rounded-xl text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
                 {React.cloneElement(link.icon, { size: 22 })}
                 <span className="font-medium text-base">{link.name}</span>

@@ -39,7 +39,7 @@ export default function Savings() {
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="glass-panel p-6 lg:col-span-1 h-fit">
-          <h2 className="text-xl font-bold mb-6 text-[#fbc02d]">Create New Goal</h2>
+          <h2 className="text-xl font-bold mb-6 text-primary dark:text-[#fbc02d]">Create New Goal</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm text-gray-700 dark:text-gray-400 mb-1">Goal Name</label>
@@ -72,7 +72,7 @@ export default function Savings() {
                     <span className="text-gray-700 dark:text-gray-400">of ₹{goal.targetAmount}</span>
                   </div>
                   <div className="w-full bg-slate-100 dark:bg-gray-800 rounded-full h-3 mb-6 overflow-hidden border border-gray-300 dark:border-gray-700">
-                    <div className="bg-gradient-to-r from-[#fbc02d] to-primary h-3 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(230,36,41,0.5)]" style={{ width: `${progress}%` }}></div>
+                    <div className="bg-gradient-to-r from-primary to-[#4f46e5] dark:from-[#fbc02d] dark:to-primary h-3 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(230,36,41,0.5)]" style={{ width: `${progress}%` }}></div>
                   </div>
                 </div>
                 <button onClick={() => addFunds(goal.id, goal.savedAmount)} className="w-full py-3 bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-800 dark:text-white border border-slate-200 dark:border-transparent rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95">

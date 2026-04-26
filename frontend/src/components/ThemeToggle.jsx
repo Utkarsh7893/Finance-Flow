@@ -15,14 +15,14 @@ export default function ThemeToggle() {
       aria-label="Toggle Theme"
     >
       <span
-        className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+        className={`flex h-6 w-6 items-center justify-center transform rounded-full bg-white transition-transform ${
           isDark ? 'translate-x-7' : 'translate-x-1'
-        } shadow-sm flex items-center justify-center`}
+        } shadow-sm`}
       >
         {isDark ? (
-          <Moon size={14} className="text-gray-800" />
+          <Moon size={16} className="text-slate-900" />
         ) : (
-          <Sun size={14} className="text-amber-500" />
+          <Sun size={16} className="text-amber-600" />
         )}
       </span>
     </button>

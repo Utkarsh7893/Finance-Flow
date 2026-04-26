@@ -44,12 +44,12 @@ export default function Borrowed() {
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="glass-panel p-6 lg:col-span-1 h-fit">
-          <h2 className="text-xl font-bold mb-6 text-orange-400">Record Transaction</h2>
+          <h2 className="text-xl font-bold mb-6 text-primary dark:text-orange-400">Record Transaction</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="flex gap-4 mb-4 transform scale-95 origin-left">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" checked={type === 'BORROWED'} onChange={() => setType('BORROWED')} className="accent-orange-500" />
-                <span className={type === 'BORROWED' ? 'text-orange-400 font-bold' : 'text-gray-700 dark:text-gray-400'}>I Borrowed</span>
+                <input type="radio" checked={type === 'BORROWED'} onChange={() => setType('BORROWED')} className="accent-primary dark:accent-orange-500" />
+                <span className={type === 'BORROWED' ? 'text-primary dark:text-orange-400 font-bold' : 'text-gray-700 dark:text-gray-400'}>I Borrowed</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="radio" checked={type === 'LENT'} onChange={() => setType('LENT')} className="accent-emerald-500" />
@@ -68,7 +68,7 @@ export default function Borrowed() {
               <label className="block text-sm text-gray-700 dark:text-gray-400 mb-1">Due Date</label>
               <input type="date" required className="input-field" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
             </div>
-            <button type="submit" className="btn-primary w-full mt-4 !bg-orange-500 hover:!bg-orange-600">Save Record</button>
+            <button type="submit" className="btn-primary w-full mt-4 dark:!bg-orange-500 dark:hover:!bg-orange-600">Save Record</button>
           </form>
         </div>
 
@@ -77,9 +77,9 @@ export default function Borrowed() {
             <h2 className="text-xl font-bold mb-6">Pending Debts</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {pendingTx.map(tx => (
-                <div key={tx.id} className={`p-4 rounded-xl border ${tx.type === 'BORROWED' ? 'border-orange-500/30 bg-orange-500/5' : 'border-emerald-500/30 bg-emerald-500/5'}`}>
+                <div key={tx.id} className={`p-4 rounded-xl border ${tx.type === 'BORROWED' ? 'border-primary/30 bg-primary/5 dark:border-orange-500/30 dark:bg-orange-500/5' : 'border-emerald-500/30 bg-emerald-500/5'}`}>
                   <div className="flex justify-between items-start mb-2">
-                    <span className={`text-xs font-bold px-2 py-1 rounded mb-2 inline-block ${tx.type === 'BORROWED' ? 'bg-orange-500/20 text-orange-400' : 'bg-emerald-500/20 text-emerald-400'}`}>
+                    <span className={`text-xs font-bold px-2 py-1 rounded mb-2 inline-block ${tx.type === 'BORROWED' ? 'bg-primary/20 text-primary dark:bg-orange-500/20 dark:text-orange-400' : 'bg-emerald-500/20 text-emerald-400'}`}>
                       {tx.type === 'BORROWED' ? 'YOU OWE' : 'YOU ARE OWED'}
                     </span>
                   </div>

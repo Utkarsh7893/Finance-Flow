@@ -4,6 +4,8 @@ import { api, useStore } from '../store';
 import { ArrowRight, UserCircle, Mail, Lock, Eye, EyeOff, Zap, Shield, Target, FileText } from 'lucide-react';
 import Background3D from '../components/Background3D';
 import ThemeToggle from '../components/ThemeToggle';
+import logoImg from '../assets/logo.png';
+import logoLightImg from '../assets/logo_light.png';
 
 export default function Login() {
   const [searchParams] = useSearchParams();
@@ -14,14 +16,15 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [termsAccepted, setTermsAccepted] = useState(false);
+  const termsAccepted = useStore(state => state.termsAccepted);
+  const setTermsAccepted = useStore(state => state.setTermsAccepted);
   const [error, setError] = useState('');
 
   // Sign-up state
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
   const [showRegPassword, setShowRegPassword] = useState(false);
-  const [regTermsAccepted, setRegTermsAccepted] = useState(false);
+
   const [regError, setRegError] = useState('');
 
   // Flip & shared
@@ -36,6 +39,7 @@ export default function Login() {
     const savedEmail = localStorage.getItem('rememberedEmail');
     if (savedEmail) { setEmail(savedEmail); setRememberMe(true); }
     if (searchParams.get('guest') === 'true') handleGuest();
+    if (searchParams.get('mode') === 'signup') setIsFlipped(true);
   }, []);
 
   const handleFlip = () => {
@@ -60,7 +64,7 @@ export default function Login() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    if (!regTermsAccepted) { setRegError('Please accept the Terms & Conditions to proceed.'); return; }
+    if (!termsAccepted) { setRegError('Please accept the Terms & Conditions to proceed.'); return; }
     setRegError(''); setLoading(true);
     try {
       const { data } = await api.post('/auth/register', { email: regEmail, password: regPassword });
@@ -109,7 +113,7 @@ export default function Login() {
     </div>
   );
 
-  const TermsBlock = ({ accepted, onChange }) => (
+  const TermsBlock = ({ accepted, onChange, mode }) => (
     <div className="bg-slate-100 dark:bg-[#1a1c29]/60 border border-slate-200 dark:border-gray-700/40 rounded-xl p-4 transition-colors duration-300">
       <div className="flex items-center gap-2 mb-2">
         <FileText size={13} className="text-gray-700 dark:text-gray-400" />
@@ -119,7 +123,7 @@ export default function Login() {
         <Checkbox checked={accepted} onChange={onChange} />
         <span className="text-xs text-gray-700 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-gray-300 leading-relaxed transition-colors">
           I agree to the{' '}
-          <button type="button" onClick={e => { e.stopPropagation(); navigate('/terms-view'); }}
+          <button type="button" onClick={e => { e.stopPropagation(); navigate(mode === 'signup' ? '/terms-view?mode=signup' : '/terms-view'); }}
             className="text-primary hover:text-primary-dark underline underline-offset-2 transition-colors font-medium">
             Terms & Conditions
           </button>
@@ -141,9 +145,10 @@ export default function Login() {
       {/* Left — Hero Branding (desktop only) */}
       <div className="hidden lg:flex flex-1 flex-col justify-center items-center px-12 relative z-10">
         <div className="max-w-md">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-gray-900 dark:text-white font-bold shadow-[0_0_15px_rgba(230,36,41,0.5)]">F</div>
-            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#fbc02d]">Finance Flow</span>
+          <div className="flex items-center gap-3 mb-8 cursor-pointer" onClick={() => navigate('/')}>
+            <img src={logoLightImg} alt="Centsible Logo" className="w-11 h-11 rounded-full object-cover shadow-[0_0_10px_rgba(0,0,0,0.1)] border border-gray-200 block dark:hidden" />
+            <img src={logoImg} alt="Centsible Logo" className="w-11 h-11 rounded-full object-cover shadow-[0_0_20px_rgba(230,36,41,0.4)] border border-white/10 hidden dark:block" />
+            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#fbc02d]">Centsible</span>
           </div>
           <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-4 leading-tight transition-colors">
             Your money.<br />
@@ -175,9 +180,10 @@ export default function Login() {
             {/* ── FRONT: Sign In ─────────────────────── */}
             <div className="flip-front glass-panel w-full p-8 md:p-10">
               {/* Mobile logo */}
-              <div className="lg:hidden flex items-center justify-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-gray-900 dark:text-white font-bold shadow-[0_0_15px_rgba(230,36,41,0.5)]">F</div>
-                <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#fbc02d]">Finance Flow</span>
+              <div className="lg:hidden flex items-center justify-center gap-3 mb-6 cursor-pointer" onClick={() => navigate('/')}>
+                <img src={logoLightImg} alt="Centsible Logo" className="w-11 h-11 rounded-full object-cover shadow-[0_0_10px_rgba(0,0,0,0.1)] border border-gray-200 block dark:hidden" />
+                <img src={logoImg} alt="Centsible Logo" className="w-11 h-11 rounded-full object-cover shadow-[0_0_20px_rgba(230,36,41,0.4)] border border-white/10 hidden dark:block" />
+                <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#fbc02d]">Centsible</span>
               </div>
 
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 transition-colors">Welcome back, Hero</h2>
@@ -252,9 +258,10 @@ export default function Login() {
             {/* ── BACK: Sign Up ──────────────────────── */}
             <div className="flip-back glass-panel w-full p-8 md:p-10">
               {/* Mobile logo */}
-              <div className="lg:hidden flex items-center justify-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-gray-900 dark:text-white font-bold shadow-[0_0_15px_rgba(230,36,41,0.5)]">F</div>
-                <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#fbc02d]">Finance Flow</span>
+              <div className="lg:hidden flex items-center justify-center gap-3 mb-6 cursor-pointer" onClick={() => navigate('/')}>
+                <img src={logoLightImg} alt="Centsible Logo" className="w-11 h-11 rounded-full object-cover shadow-[0_0_10px_rgba(0,0,0,0.1)] border border-gray-200 block dark:hidden" />
+                <img src={logoImg} alt="Centsible Logo" className="w-11 h-11 rounded-full object-cover shadow-[0_0_20px_rgba(230,36,41,0.4)] border border-white/10 hidden dark:block" />
+                <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#fbc02d]">Centsible</span>
               </div>
 
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 transition-colors">Join the Squad 🦸</h2>
@@ -278,10 +285,10 @@ export default function Login() {
                   </button>
                 </div>
 
-                <TermsBlock accepted={regTermsAccepted} onChange={setRegTermsAccepted} />
+                <TermsBlock accepted={termsAccepted} onChange={setTermsAccepted} mode="signup" />
 
-                <button type="submit" disabled={loading || !regTermsAccepted}
-                  className={`w-full flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-semibold transition-all ${regTermsAccepted ? 'btn-primary' : 'bg-slate-200 dark:bg-gray-800 text-slate-500 dark:text-gray-500 cursor-not-allowed opacity-70'}`}>
+                <button type="submit" disabled={loading || !termsAccepted}
+                  className={`w-full flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-semibold transition-all ${termsAccepted ? 'btn-primary' : 'bg-slate-200 dark:bg-gray-800 text-slate-500 dark:text-gray-500 cursor-not-allowed opacity-70'}`}>
                   {loading ? 'Creating Account...' : 'Create Account'}{!loading && <ArrowRight className="w-5 h-5" />}
                 </button>
               </form>

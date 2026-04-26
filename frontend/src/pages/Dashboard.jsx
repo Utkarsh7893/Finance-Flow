@@ -5,6 +5,29 @@ import { Wallet, TrendingDown, HandCoins, ArrowRightLeft, Sparkles, SmartphoneNf
 
 const COLORS = ['#e62429', '#0b4a99', '#fbc02d', '#512da8', '#00796b'];
 
+function Clock() {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="text-right bg-white/50 dark:bg-[#0a0b10]/50 backdrop-blur-md px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+      <p className="text-gray-900 dark:text-white font-bold text-sm transition-colors">
+        {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+      </p>
+      <p className="text-gray-700 dark:text-gray-400 text-xs transition-colors">
+        {time.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
+      </p>
+    </div>
+  );
+}
+
+let globalNotifyState = 'idle';
+let globalContactInfo = '';
+
 export default function Dashboard() {
   const user = useStore(state => state.user);
   const theme = useStore(state => state.theme);
@@ -13,8 +36,16 @@ export default function Dashboard() {
   const [editingBudget, setEditingBudget] = useState(false);
   const [budgetInput, setBudgetInput] = useState('');
   const [budgetError, setBudgetError] = useState('');
-  const [notifyState, setNotifyState] = useState('idle');
-  const [contactInfo, setContactInfo] = useState('');
+  const [notifyState, setNotifyState] = useState(globalNotifyState);
+  const [contactInfo, setContactInfo] = useState(globalContactInfo);
+
+  useEffect(() => {
+    globalNotifyState = notifyState;
+  }, [notifyState]);
+
+  useEffect(() => {
+    globalContactInfo = contactInfo;
+  }, [contactInfo]);
 
   const maskEmail = (email) => {
     if (!email) return '';
@@ -36,6 +67,15 @@ export default function Dashboard() {
       setNotifyState('success');
     }
   };
+
+  useEffect(() => {
+    if (notifyState === 'success') {
+      const timer = setTimeout(() => {
+        setNotifyState('hidden');
+      }, 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [notifyState]);
 
   const fetchData = () => {
     api.get('/dashboard').then(res => {
@@ -84,9 +124,12 @@ export default function Dashboard() {
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto z-10 relative transition-colors duration-300">
-      <header className="mb-6">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900 dark:text-white transition-colors">Overview</h1>
-        <p className="text-gray-700 dark:text-gray-400 text-sm md:text-base transition-colors">Welcome back, Hero. Here is your financial summary.</p>
+      <header className="mb-6 flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900 dark:text-white transition-colors">Overview</h1>
+          <p className="text-gray-700 dark:text-gray-400 text-sm md:text-base transition-colors">Welcome back, Hero. Here is your financial summary.</p>
+        </div>
+        <Clock />
       </header>
 
       {/* Monthly Budget Editor */}
@@ -141,7 +184,7 @@ export default function Dashboard() {
       </div>
 
       {/* Coming Soon UPI Banner */}
-      <div className="mb-8 bg-gradient-to-r from-primary/10 to-[#0b4a99]/10 border border-primary/20 dark:border-primary/30 rounded-2xl p-5 md:p-6 relative overflow-hidden group">
+      <div className="mb-8 bg-white/80 dark:bg-[#0a0b10]/80 backdrop-blur-md sm:backdrop-blur-none sm:bg-transparent sm:dark:bg-transparent bg-none sm:bg-gradient-to-r sm:from-primary/10 sm:to-[#0b4a99]/10 border border-primary/20 dark:border-primary/30 rounded-2xl p-5 md:p-6 relative overflow-hidden group shadow-sm sm:shadow-none">
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[40px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#0b4a99]/10 rounded-full blur-[30px] pointer-events-none" />
         <div className="flex flex-col md:flex-row items-center gap-4">
@@ -167,8 +210,8 @@ export default function Dashboard() {
               </button>
             )}
             {notifyState === 'input' && (
-              <div className="flex flex-col gap-2 animate-fade-in w-full sm:w-auto">
-                <p className="text-xs text-gray-700 dark:text-gray-400 text-center transition-colors">Enter your email or phone to get notified</p>
+              <div className="flex flex-col gap-2 animate-fade-in w-full sm:w-auto bg-white/80 dark:bg-[#12141f]/80 backdrop-blur-md p-3 sm:p-0 sm:bg-transparent sm:dark:bg-transparent sm:border-none sm:shadow-none rounded-xl border border-white/50 dark:border-gray-700/50 shadow-sm">
+                <p className="text-xs text-gray-800 dark:text-gray-300 sm:text-gray-700 sm:dark:text-gray-400 text-center transition-colors font-medium sm:font-normal">Enter your email or phone to get notified</p>
                 <div className="flex items-center gap-2">
                   <div className="relative flex-1">
                     <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-700 dark:text-gray-400" />
